@@ -6,7 +6,7 @@ iOS framework for integrating with the [Courier web service][]
 
 ## Installation
 
-### Carthage
+### [Carthage]
 
 [Carthage]: https://github.com/Carthage/Carthage
 

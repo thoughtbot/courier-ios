@@ -111,16 +111,12 @@ private class TestURLSessionTask: URLSessionTask {
 private func dataFromHexadecimalString(string: String) -> NSData? {
   let trimmedString = string.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<> ")).stringByReplacingOccurrencesOfString(" ", withString: "")
 
-  // make sure the cleaned up string consists solely of hex digits, and that we have even number of them
-
   let regex = try! NSRegularExpression(pattern: "^[0-9a-f]*$", options: .CaseInsensitive)
 
-  let found = regex.firstMatchInString(trimmedString, options: [], range: NSMakeRange(0, trimmedString.characters.count))
+  let found = regex.firstMatchInString(trimmedString, options: [], range: NSRange(0..<trimmedString.characters.count))
   if found == nil || found?.range.location == NSNotFound || trimmedString.characters.count % 2 != 0 {
     return nil
   }
-
-  // everything ok, so now let's build NSData
 
   let data = NSMutableData(capacity: trimmedString.characters.count / 2)
 

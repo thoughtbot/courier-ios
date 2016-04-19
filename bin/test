@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+set -o pipefail
+
+xcrun xcodebuild \
+  -project Courier.xcodeproj \
+  -scheme Courier \
+  -destination 'platform=iOS Simulator,name=iPhone 6' \
+  test \
+  | xcpretty --color
+

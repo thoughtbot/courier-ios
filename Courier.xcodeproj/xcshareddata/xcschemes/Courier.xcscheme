@@ -28,7 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A15002E81CC5190C0036CAF5"
+               BuildableName = "CourierTests.xctest"
+               BlueprintName = "CourierTests"
+               ReferencedContainer = "container:Courier.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "A1C837211CB6446100F4BB21"
+            BuildableName = "Courier.framework"
+            BlueprintName = "Courier"
+            ReferencedContainer = "container:Courier.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

@@ -2,24 +2,30 @@ import Foundation
 
 public struct Courier {
   public let apiKey: String
+  public let apiVersion = 1
 
-  let urlSession = NSURLSession.sharedSession()
-  let courierURL = NSURL(string: "https://courier-testing.herokuapp.com/")!
+  let urlSession: URLSession
+  let courierURL = NSURL(string: "https://courier.thoughtbot.com/")!
 
-  public init(apiKey: String) {
+  public init(
+    apiKey: String,
+    urlSession: URLSession = NSURLSession.sharedSession()
+  ) {
     self.apiKey = apiKey
+    self.urlSession = urlSession
   }
 
   public func subscribeToChannel(channel: String, withToken token: NSData) {
-    let subscribeURL = courierURL.URLByAppendingPathComponent("subscribe").URLByAppendingPathComponent(channel)
-    let request = NSMutableURLRequest(URL: subscribeURL)
+    let channelURL = courierURL.URLByAppendingPathComponent("subscribe").URLByAppendingPathComponent(parameterizeString((channel)))
+
+    let request = NSMutableURLRequest(URL: channelURL)
     request.HTTPMethod = "PUT"
     request.setValue("Token token=\(apiKey)", forHTTPHeaderField: "Authorization")
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.setValue("application/json", forHTTPHeaderField: "Accept")
+    request.setValue("application/json version=\(apiVersion)", forHTTPHeaderField: "Accept")
 
     request.HTTPBody = HTTPBodyForToken(token)
-    NSURLSession.sharedSession().dataTaskWithRequest(request) { data, response, error in
+    urlSession.dataTaskWithRequest(request) { data, response, error in
       if let error = error {
         NSLog("PUT /subscribe/\(channel) error: \(error)")
       } else if let response = response as? NSHTTPURLResponse {
@@ -45,5 +51,15 @@ private extension Courier {
     }
 
     return tokenString
+  }
+
+  func parameterizeString(string: String) -> String {
+    let mutableString = NSMutableString(string: string)
+    CFStringTransform(mutableString, nil, kCFStringTransformToLatin, false)
+    CFStringTransform(mutableString, nil, kCFStringTransformStripCombiningMarks, false)
+    CFStringLowercase(mutableString, CFLocaleCopyCurrent())
+
+    let components = (mutableString as String).componentsSeparatedByCharactersInSet(.whitespaceAndNewlineCharacterSet())
+    return components.filter { $0 != "" }.joinWithSeparator("-")
   }
 }

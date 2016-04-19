@@ -33,7 +33,7 @@ playground.xcworkspace
 # Packages/
 .build/
 
-Carthage/Build
+Carthage
 
 # fastlane
 #

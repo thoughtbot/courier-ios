@@ -7,11 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A15002EE1CC5190C0036CAF5 /* Courier.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C837221CB6446100F4BB21 /* Courier.framework */; };
+		A15002F51CC51A950036CAF5 /* CourierSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15002F41CC51A950036CAF5 /* CourierSpec.swift */; };
+		A15002F81CC51C4F0036CAF5 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A15002F61CC51C4F0036CAF5 /* Nimble.framework */; };
+		A15002F91CC51C4F0036CAF5 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A15002F71CC51C4F0036CAF5 /* Quick.framework */; };
+		A15002FC1CC51C980036CAF5 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15002F61CC51C4F0036CAF5 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A15002FD1CC51C980036CAF5 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15002F71CC51C4F0036CAF5 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A15003001CC51F930036CAF5 /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15002FF1CC51F930036CAF5 /* URLSession.swift */; };
+		A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15003011CC51FF70036CAF5 /* URLSessionTask.swift */; };
 		A1C837261CB6446100F4BB21 /* Courier.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C837251CB6446100F4BB21 /* Courier.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1C8372E1CB644DA00F4BB21 /* Courier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C8372D1CB644DA00F4BB21 /* Courier.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A15002EF1CC5190C0036CAF5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A1C837191CB6446100F4BB21 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1C837211CB6446100F4BB21;
+			remoteInfo = Courier;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A15002FB1CC51C860036CAF5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A15002FC1CC51C980036CAF5 /* Nimble.framework in CopyFiles */,
+				A15002FD1CC51C980036CAF5 /* Quick.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		A15002E91CC5190C0036CAF5 /* CourierTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CourierTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A15002ED1CC5190C0036CAF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A15002F41CC51A950036CAF5 /* CourierSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierSpec.swift; sourceTree = "<group>"; };
+		A15002F61CC51C4F0036CAF5 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
+		A15002F71CC51C4F0036CAF5 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
+		A15002FF1CC51F930036CAF5 /* URLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSession.swift; sourceTree = "<group>"; };
+		A15003011CC51FF70036CAF5 /* URLSessionTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionTask.swift; sourceTree = "<group>"; };
 		A1C837221CB6446100F4BB21 /* Courier.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Courier.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C837251CB6446100F4BB21 /* Courier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Courier.h; sourceTree = "<group>"; };
 		A1C837271CB6446100F4BB21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -19,6 +58,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A15002E61CC5190C0036CAF5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A15002EE1CC5190C0036CAF5 /* Courier.framework in Frameworks */,
+				A15002F81CC51C4F0036CAF5 /* Nimble.framework in Frameworks */,
+				A15002F91CC51C4F0036CAF5 /* Quick.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A1C8371E1CB6446100F4BB21 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,11 +78,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A15002EA1CC5190C0036CAF5 /* CourierTests */ = {
+			isa = PBXGroup;
+			children = (
+				A15002ED1CC5190C0036CAF5 /* Info.plist */,
+				A15002F41CC51A950036CAF5 /* CourierSpec.swift */,
+			);
+			path = CourierTests;
+			sourceTree = "<group>";
+		};
+		A15002FA1CC51C540036CAF5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A15002F61CC51C4F0036CAF5 /* Nimble.framework */,
+				A15002F71CC51C4F0036CAF5 /* Quick.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A15002FE1CC51F790036CAF5 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				A15002FF1CC51F930036CAF5 /* URLSession.swift */,
+				A15003011CC51FF70036CAF5 /* URLSessionTask.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		A1C837181CB6446100F4BB21 = {
 			isa = PBXGroup;
 			children = (
 				A1C837241CB6446100F4BB21 /* Courier */,
+				A15002EA1CC5190C0036CAF5 /* CourierTests */,
 				A1C837231CB6446100F4BB21 /* Products */,
+				A15002FA1CC51C540036CAF5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				A1C837221CB6446100F4BB21 /* Courier.framework */,
+				A15002E91CC5190C0036CAF5 /* CourierTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +127,7 @@
 		A1C837241CB6446100F4BB21 /* Courier */ = {
 			isa = PBXGroup;
 			children = (
+				A15002FE1CC51F790036CAF5 /* Protocols */,
 				A1C837251CB6446100F4BB21 /* Courier.h */,
 				A1C837271CB6446100F4BB21 /* Info.plist */,
 				A1C8372D1CB644DA00F4BB21 /* Courier.swift */,
@@ -69,6 +149,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		A15002E81CC5190C0036CAF5 /* CourierTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A15002F31CC5190C0036CAF5 /* Build configuration list for PBXNativeTarget "CourierTests" */;
+			buildPhases = (
+				A15002FB1CC51C860036CAF5 /* CopyFiles */,
+				A15002E51CC5190C0036CAF5 /* Sources */,
+				A15002E61CC5190C0036CAF5 /* Frameworks */,
+				A15002E71CC5190C0036CAF5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A15002F01CC5190C0036CAF5 /* PBXTargetDependency */,
+			);
+			name = CourierTests;
+			productName = CourierTests;
+			productReference = A15002E91CC5190C0036CAF5 /* CourierTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A1C837211CB6446100F4BB21 /* Courier */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A1C8372A1CB6446100F4BB21 /* Build configuration list for PBXNativeTarget "Courier" */;
@@ -93,9 +192,13 @@
 		A1C837191CB6446100F4BB21 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = thoughtbot;
 				TargetAttributes = {
+					A15002E81CC5190C0036CAF5 = {
+						CreatedOnToolsVersion = 7.3;
+					};
 					A1C837211CB6446100F4BB21 = {
 						CreatedOnToolsVersion = 7.3;
 					};
@@ -114,11 +217,19 @@
 			projectRoot = "";
 			targets = (
 				A1C837211CB6446100F4BB21 /* Courier */,
+				A15002E81CC5190C0036CAF5 /* CourierTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A15002E71CC5190C0036CAF5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A1C837201CB6446100F4BB21 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -129,17 +240,66 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A15002E51CC5190C0036CAF5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A15002F51CC51A950036CAF5 /* CourierSpec.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A1C8371D1CB6446100F4BB21 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */,
+				A15003001CC51F930036CAF5 /* URLSession.swift in Sources */,
 				A1C8372E1CB644DA00F4BB21 /* Courier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A15002F01CC5190C0036CAF5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1C837211CB6446100F4BB21 /* Courier */;
+			targetProxy = A15002EF1CC5190C0036CAF5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		A15002F11CC5190C0036CAF5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = CourierTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.thoughtbot.CourierTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A15002F21CC5190C0036CAF5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = CourierTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.thoughtbot.CourierTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		A1C837281CB6446100F4BB21 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -269,6 +429,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A15002F31CC5190C0036CAF5 /* Build configuration list for PBXNativeTarget "CourierTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A15002F11CC5190C0036CAF5 /* Debug */,
+				A15002F21CC5190C0036CAF5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		A1C8371C1CB6446100F4BB21 /* Build configuration list for PBXProject "Courier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

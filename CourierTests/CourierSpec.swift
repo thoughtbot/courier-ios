@@ -70,15 +70,15 @@ class CourierSpec: QuickSpec {
         expect(session.lastRequest?.valueForHTTPHeaderField("Content-Type")) == "application/json"
       }
 
-      it("sends the device token in the PUT body") {
+      it("sends the device in the PUT body") {
         let session = TestURLSession()
         let courier = Courier(apiKey: "", urlSession: session)
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
         courier.subscribeToChannel("Test", withToken: dataFromHexadecimalString(token)!)
 
-        let body = NSString(data: session.lastRequest!.HTTPBody!, encoding: NSUTF8StringEncoding)
-        expect(body).to(contain(token))
+        let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
     }
   }

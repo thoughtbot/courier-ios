@@ -39,7 +39,7 @@ public struct Courier {
 
 private extension Courier {
   func HTTPBodyForToken(token: NSData) -> NSData {
-    return try! NSJSONSerialization.dataWithJSONObject(["token": tokenStringFromData(token)], options: [])
+    return try! NSJSONSerialization.dataWithJSONObject(["device": ["token": tokenStringFromData(token)]], options: [])
   }
 
   func tokenStringFromData(data: NSData) -> String {

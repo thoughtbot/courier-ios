@@ -1,22 +1,26 @@
 import Foundation
 
 public struct Courier {
+  static let defaultBaseURL = NSURL(string: "https://courier.thoughtbot.com/")!
+
   public let apiKey: String
   public let apiVersion = 1
 
   let urlSession: URLSession
-  let courierURL = NSURL(string: "https://courier.thoughtbot.com/")!
+  let baseURL: NSURL
 
   public init(
     apiKey: String,
-    urlSession: URLSession = NSURLSession.sharedSession()
+    urlSession: URLSession = NSURLSession.sharedSession(),
+    baseURL: NSURL = defaultBaseURL
   ) {
     self.apiKey = apiKey
     self.urlSession = urlSession
+    self.baseURL = baseURL
   }
 
   public func subscribeToChannel(channel: String, withToken token: NSData) {
-    let channelURL = courierURL.URLByAppendingPathComponent("subscribe").URLByAppendingPathComponent(parameterizeString((channel)))
+    let channelURL = baseURL.URLByAppendingPathComponent("subscribe").URLByAppendingPathComponent(parameterizeString((channel)))
 
     let request = NSMutableURLRequest(URL: channelURL)
     request.HTTPMethod = "PUT"

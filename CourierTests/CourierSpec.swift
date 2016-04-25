@@ -80,6 +80,15 @@ class CourierSpec: QuickSpec {
         let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
+
+      it("supports changing the default base URL") {
+        let session = TestURLSession()
+        let courier = Courier(apiKey: "", urlSession: session, baseURL: NSURL(string: "https://example.com")!)
+
+        courier.subscribeToChannel("channel", withToken: NSData())
+
+        expect(session.lastRequest?.URL) == NSURL(string: "https://example.com/subscribe/channel")
+      }
     }
   }
 }

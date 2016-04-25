@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A13280B11CCE66D400D3E964 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13280B01CCE66D400D3E964 /* Environment.swift */; };
 		A15002EE1CC5190C0036CAF5 /* Courier.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1C837221CB6446100F4BB21 /* Courier.framework */; };
 		A15002F51CC51A950036CAF5 /* CourierSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15002F41CC51A950036CAF5 /* CourierSpec.swift */; };
 		A15002F81CC51C4F0036CAF5 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A15002F61CC51C4F0036CAF5 /* Nimble.framework */; };
@@ -44,6 +45,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A13280B01CCE66D400D3E964 /* Environment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		A15002E91CC5190C0036CAF5 /* CourierTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CourierTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A15002ED1CC5190C0036CAF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A15002F41CC51A950036CAF5 /* CourierSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierSpec.swift; sourceTree = "<group>"; };
@@ -78,6 +80,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A13280AF1CCE66B700D3E964 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A13280B01CCE66D400D3E964 /* Environment.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		A15002EA1CC5190C0036CAF5 /* CourierTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -127,6 +137,7 @@
 		A1C837241CB6446100F4BB21 /* Courier */ = {
 			isa = PBXGroup;
 			children = (
+				A13280AF1CCE66B700D3E964 /* Models */,
 				A15002FE1CC51F790036CAF5 /* Protocols */,
 				A1C837251CB6446100F4BB21 /* Courier.h */,
 				A1C837271CB6446100F4BB21 /* Info.plist */,
@@ -253,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */,
+				A13280B11CCE66D400D3E964 /* Environment.swift in Sources */,
 				A15003001CC51F930036CAF5 /* URLSession.swift in Sources */,
 				A1C8372E1CB644DA00F4BB21 /* Courier.swift in Sources */,
 			);
@@ -436,6 +448,7 @@
 				A15002F21CC5190C0036CAF5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A1C8371C1CB6446100F4BB21 /* Build configuration list for PBXProject "Courier" */ = {
 			isa = XCConfigurationList;

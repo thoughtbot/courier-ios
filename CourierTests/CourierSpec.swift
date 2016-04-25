@@ -11,7 +11,7 @@ class CourierSpec: QuickSpec {
 
         courier.subscribeToChannel("Tést\n chännél", withToken: NSData())
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel")
+        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel?environment=production")
       }
 
       it("uses PUT") {
@@ -87,7 +87,16 @@ class CourierSpec: QuickSpec {
 
         courier.subscribeToChannel("channel", withToken: NSData())
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://example.com/subscribe/channel")
+        expect(session.lastRequest?.URL) == NSURL(string: "https://example.com/subscribe/channel?environment=production")
+      }
+
+      it("supports changing the default environment") {
+        let session = TestURLSession()
+        let courier = Courier(apiKey: "", urlSession: session, environment: .Development)
+
+        courier.subscribeToChannel("channel", withToken: NSData())
+
+        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/channel?environment=development")
       }
     }
   }

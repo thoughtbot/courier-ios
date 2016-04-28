@@ -10,6 +10,10 @@ public struct Courier {
   let baseURL: NSURL
   let environment: Environment
 
+  private let specialCharactersRegex = try! NSRegularExpression(pattern: "[^a-z0-9\\-_]+", options: .CaseInsensitive)
+  private let leadingTrailingSeparatorRegex = try! NSRegularExpression(pattern: "^-|-$", options: .CaseInsensitive)
+  private let repeatingSeperatorRegex = try! NSRegularExpression(pattern: "-{2,}", options: .CaseInsensitive)
+
   public init(
     apiToken: String,
     urlSession: URLSession = NSURLSession.sharedSession(),
@@ -68,7 +72,10 @@ private extension Courier {
     CFStringLowercase(mutableString, CFLocaleCopyCurrent())
 
     let components = (mutableString as String).componentsSeparatedByCharactersInSet(.whitespaceAndNewlineCharacterSet())
-    return components.filter { $0 != "" }.joinWithSeparator("-")
+    let transliterated = components.filter { $0 != "" }.joinWithSeparator("-")
+    return transliterated.stringByReplacingMatches(specialCharactersRegex, withString: "-")
+      .stringByReplacingMatches(leadingTrailingSeparatorRegex, withString: "")
+      .stringByReplacingMatches(repeatingSeperatorRegex, withString: "-")
   }
 
   func URLForChannel(channel: String, environment: Environment) -> NSURL? {
@@ -76,5 +83,12 @@ private extension Courier {
     components.path = "subscribe/\(self.parameterizeString(channel))"
     components.queryItems = [NSURLQueryItem(name: "environment", value: self.environment.rawValue)]
     return components.URLRelativeToURL(self.baseURL)
+  }
+}
+
+private extension String {
+  func stringByReplacingMatches(regex: NSRegularExpression, withString replacementString: String) -> String {
+    let range = NSRange(location: 0, length: startIndex.distanceTo(endIndex))
+    return regex.stringByReplacingMatchesInString(self, options: [], range: range, withTemplate: replacementString)
   }
 }

@@ -9,9 +9,9 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", urlSession: session)
 
-        courier.subscribeToChannel("Tést\n chännél", withToken: NSData())
+        courier.subscribeToChannel("!Tést/chännél! !test!", withToken: NSData())
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel?environment=production")
+        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
       }
 
       it("uses PUT") {

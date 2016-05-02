@@ -3,7 +3,7 @@ import Foundation
 public struct Courier {
   static let defaultBaseURL = NSURL(string: "https://courier.thoughtbot.com/")!
 
-  public let apiKey: String
+  public let apiToken: String
   public let apiVersion = 1
 
   let urlSession: URLSession
@@ -11,12 +11,12 @@ public struct Courier {
   let environment: Environment
 
   public init(
-    apiKey: String,
+    apiToken: String,
     urlSession: URLSession = NSURLSession.sharedSession(),
     baseURL: NSURL = defaultBaseURL,
     environment: Environment = .Production
   ) {
-    self.apiKey = apiKey
+    self.apiToken = apiToken
     self.urlSession = urlSession
     self.baseURL = baseURL
     self.environment = environment
@@ -28,7 +28,7 @@ public struct Courier {
     }
     let request = NSMutableURLRequest(URL: url)
     request.HTTPMethod = "PUT"
-    request.setValue("Token token=\(apiKey)", forHTTPHeaderField: "Authorization")
+    request.setValue("Token token=\(apiToken)", forHTTPHeaderField: "Authorization")
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.setValue("application/json version=\(apiVersion)", forHTTPHeaderField: "Accept")
 

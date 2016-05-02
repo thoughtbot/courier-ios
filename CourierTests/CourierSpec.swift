@@ -7,7 +7,7 @@ class CourierSpec: QuickSpec {
     context("#subscribeToChannel") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
 
         courier.subscribeToChannel("Tést\n chännél", withToken: NSData())
 
@@ -16,7 +16,7 @@ class CourierSpec: QuickSpec {
 
       it("uses PUT") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -26,7 +26,7 @@ class CourierSpec: QuickSpec {
       it("resumes the data task") {
         let task = TestURLSessionTask()
         let session = TestURLSession(task: task)
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -34,18 +34,18 @@ class CourierSpec: QuickSpec {
       }
 
       it("uses the API token for authentication") {
-        let apiKey = "api_key"
+        let apiToken = "api_key"
         let session = TestURLSession()
-        let courier = Courier(apiKey: apiKey, urlSession: session)
+        let courier = Courier(apiToken: apiToken, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
-        expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiKey)"
+        expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiToken)"
       }
 
       it("specifies the default version to use") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -54,7 +54,7 @@ class CourierSpec: QuickSpec {
 
       it("accepts application/json") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -63,7 +63,7 @@ class CourierSpec: QuickSpec {
 
       it("sends application/json") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -72,7 +72,7 @@ class CourierSpec: QuickSpec {
 
       it("sends the device in the PUT body") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session)
+        let courier = Courier(apiToken: "", urlSession: session)
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
         courier.subscribeToChannel("Test", withToken: dataFromHexadecimalString(token)!)
@@ -83,7 +83,7 @@ class CourierSpec: QuickSpec {
 
       it("supports changing the default base URL") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session, baseURL: NSURL(string: "https://example.com")!)
+        let courier = Courier(apiToken: "", urlSession: session, baseURL: NSURL(string: "https://example.com")!)
 
         courier.subscribeToChannel("channel", withToken: NSData())
 
@@ -92,7 +92,7 @@ class CourierSpec: QuickSpec {
 
       it("supports changing the default environment") {
         let session = TestURLSession()
-        let courier = Courier(apiKey: "", urlSession: session, environment: .Development)
+        let courier = Courier(apiToken: "", urlSession: session, environment: .Development)
 
         courier.subscribeToChannel("channel", withToken: NSData())
 

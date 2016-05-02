@@ -1,8 +1,8 @@
 # Courier iOS
 
-iOS framework for integrating with the [Courier web service][]
+iOS framework for integrating with the [Courier API].
 
-[Courier web service]: https://github.com/thoughtbot/courier-web
+[Courier API]: https://courier.thoughtbot.com
 
 ## Installation
 
@@ -18,8 +18,7 @@ github "thoughtbout/courier-ios"
 
 then run `carthage update`.
 
-Follow the current instructions in [Carthage's README][carthage-installation]
-for up to date installation instructions.
+Follow the current instructions in [Carthage's README][carthage-installation] for up to date installation instructions.
 
 [carthage-installation]:
 https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
@@ -44,10 +43,10 @@ Then run `pod install` with CocoaPods 0.36 or newer.
 
 ### Usage
 
-Instantiate a Courier instance with your app's API key:
+Instantiate a Courier instance with your app's API token:
 
 ```swift
-let courier = Courier.init(apiKey: "[YOUR_API_KEY]")
+let courier = Courier.init(apiToken: "[YOUR_API_TOKEN]")
 ```
 
 Register your app for remote notifications:
@@ -70,10 +69,12 @@ func application(application: UIApplication, didRegisterForRemoteNotificationsWi
 Send a notification to the device:
 
 ```
-$ curl -X POST \ -d '{"broadcast": { "alert": "Hello From Courier" }}' \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Token token=[YOUR_API_KEY]" \
-    https://courier-staging.herokuapp.com/broadcast/[CHANNEL NAME]
+$ curl -X POST \
+-d '{"broadcast": { "payload": { "alert": "Hello From Courier" }}}' \
+-H "Content-Type: application/json" \
+-H "Authorization: Token token=[YOUR_API_TOKEN]" \
+-H "Accept: application/json version=1" \
+"https://courier.thoughtbot.com/broadcast/[CHANNEL_NAME]"
 ```
 
 ## Contributing

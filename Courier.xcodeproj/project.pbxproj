@@ -85,7 +85,7 @@
 			children = (
 				A13280B01CCE66D400D3E964 /* Environment.swift */,
 			);
-			name = Models;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		A15002EA1CC5190C0036CAF5 /* CourierTests */ = {

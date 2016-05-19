@@ -4,7 +4,35 @@ import Courier
 
 class CourierSpec: QuickSpec {
   override func spec() {
-    context("#subscribeToChannel") {
+    context("deviceToken=") {
+      it("stores the token in user defaults") {
+        let apiToken = "test"
+        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
+        let courier = Courier(apiToken: apiToken)
+
+        courier.deviceToken = deviceToken
+
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let key = "com.thoughtbot.courier.\(apiToken).device_token"
+        expect(userDefaults.dataForKey(key)) == deviceToken
+      }
+
+      it("uses the same device token accross instances") {
+        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
+        Courier(apiToken: "").deviceToken = deviceToken
+
+        expect(Courier(apiToken: "").deviceToken) == deviceToken
+      }
+
+      it("uses different tokens for instances with different API tokens") {
+        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
+        Courier(apiToken: "1").deviceToken = deviceToken
+
+        expect(Courier(apiToken: "2").deviceToken).to(beNil())
+      }
+    }
+
+    context("subscribeToChannel(withToken:)") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", urlSession: session)
@@ -98,6 +126,21 @@ class CourierSpec: QuickSpec {
 
         expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/channel?environment=development")
       }
+
+      it("sets the device token") {
+        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)!
+        let courier = Courier(apiToken: "")
+
+        courier.subscribeToChannel("channel", withToken: deviceToken)
+
+        expect(courier.deviceToken) == deviceToken
+      }
+    }
+
+    afterEach {
+      let userDefaults = NSUserDefaults.standardUserDefaults()
+      let dictionary = userDefaults.dictionaryRepresentation()
+      dictionary.keys.forEach(userDefaults.removeObjectForKey)
     }
   }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Courier {
+public final class Courier {
   static let defaultBaseURL = NSURL(string: "https://courier.thoughtbot.com/")!
 
   public let apiToken: String
@@ -13,6 +13,18 @@ public struct Courier {
   private let specialCharactersRegex = try! NSRegularExpression(pattern: "[^a-z0-9\\-_]+", options: .CaseInsensitive)
   private let leadingTrailingSeparatorRegex = try! NSRegularExpression(pattern: "^-|-$", options: .CaseInsensitive)
   private let repeatingSeperatorRegex = try! NSRegularExpression(pattern: "-{2,}", options: .CaseInsensitive)
+
+  private var userDefaultsKey: String {
+    return "com.thoughtbot.courier.\(apiToken).device_token"
+  }
+  public var deviceToken: NSData? {
+    get {
+      return NSUserDefaults.standardUserDefaults().dataForKey(userDefaultsKey)
+    }
+    set {
+      NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: userDefaultsKey)
+    }
+  }
 
   public init(
     apiToken: String,
@@ -27,6 +39,8 @@ public struct Courier {
   }
 
   public func subscribeToChannel(channel: String, withToken token: NSData) {
+    deviceToken = token
+
     guard let url = URLForChannel(channel, environment: environment) else {
       fatalError("Failed to URL for channel: \(channel) for environment: \(environment)")
     }

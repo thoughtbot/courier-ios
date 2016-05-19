@@ -32,6 +32,20 @@ class CourierSpec: QuickSpec {
       }
     }
 
+    context("subscribeToChannel") {
+      it("subscribes to the channel using a previously registered token") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", urlSession: session)
+        let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
+
+        courier.deviceToken = dataFromHexadecimalString(token)!
+        courier.subscribeToChannel("Test")
+
+        let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        expect(body).to(equal(["device": ["token": token]] as NSDictionary))
+      }
+    }
+
     context("subscribeToChannel(withToken:)") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()

@@ -66,7 +66,23 @@ func application(application: UIApplication, didRegisterForRemoteNotificationsWi
 }
 ```
 
-Send a notification to the device:
+Alternatively register a token first, and subscribe to a channel later:
+
+```swift
+func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+  courier.deviceToken = deviceToken
+}
+```
+
+```swift
+courier.subscribeToChannel("[CHANNEL_NAME]")
+```
+
+Courier stores the device token in [user defaults] using a key based on your API token. As long as each Courier instance is using the same API token, It's safe to use multiple instances in your app. 
+
+[user defaults]: https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSUserDefaults_Class/
+
+After subscribing to a channel broadcast a notification to it:
 
 ```
 $ curl -X POST \

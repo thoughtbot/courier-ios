@@ -8,7 +8,7 @@ class CourierSpec: QuickSpec {
       it("stores the token in user defaults") {
         let apiToken = "test"
         let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
-        let courier = Courier(apiToken: apiToken)
+        let courier = Courier(apiToken: apiToken, environment: .Development)
 
         courier.deviceToken = deviceToken
 
@@ -19,23 +19,23 @@ class CourierSpec: QuickSpec {
 
       it("uses the same device token accross instances") {
         let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
-        Courier(apiToken: "").deviceToken = deviceToken
+        Courier(apiToken: "", environment: .Development).deviceToken = deviceToken
 
-        expect(Courier(apiToken: "").deviceToken) == deviceToken
+        expect(Courier(apiToken: "", environment: .Development).deviceToken) == deviceToken
       }
 
       it("uses different tokens for instances with different API tokens") {
         let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
-        Courier(apiToken: "1").deviceToken = deviceToken
+        Courier(apiToken: "1", environment: .Development).deviceToken = deviceToken
 
-        expect(Courier(apiToken: "2").deviceToken).to(beNil())
+        expect(Courier(apiToken: "2", environment: .Development).deviceToken).to(beNil())
       }
     }
 
     context("subscribeToChannel") {
       it("subscribes to the channel using a previously registered token") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
         courier.deviceToken = dataFromHexadecimalString(token)!
@@ -49,7 +49,7 @@ class CourierSpec: QuickSpec {
     context("subscribeToChannel(withToken:)") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
 
         courier.subscribeToChannel("!Tést/chännél! !test!", withToken: NSData())
 
@@ -58,7 +58,7 @@ class CourierSpec: QuickSpec {
 
       it("uses PUT") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -68,7 +68,7 @@ class CourierSpec: QuickSpec {
       it("resumes the data task") {
         let task = TestURLSessionTask()
         let session = TestURLSession(task: task)
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -78,7 +78,7 @@ class CourierSpec: QuickSpec {
       it("uses the API token for authentication") {
         let apiToken = "api_key"
         let session = TestURLSession()
-        let courier = Courier(apiToken: apiToken, urlSession: session)
+        let courier = Courier(apiToken: apiToken, environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -87,7 +87,7 @@ class CourierSpec: QuickSpec {
 
       it("specifies the default version to use") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -96,7 +96,7 @@ class CourierSpec: QuickSpec {
 
       it("accepts application/json") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -105,7 +105,7 @@ class CourierSpec: QuickSpec {
 
       it("sends application/json") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("Test", withToken: NSData())
 
@@ -114,7 +114,7 @@ class CourierSpec: QuickSpec {
 
       it("sends the device in the PUT body") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
         courier.subscribeToChannel("Test", withToken: dataFromHexadecimalString(token)!)
@@ -125,7 +125,7 @@ class CourierSpec: QuickSpec {
 
       it("supports changing the default base URL") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session, baseURL: NSURL(string: "https://example.com")!)
+        let courier = Courier(apiToken: "", environment: .Production, urlSession: session, baseURL: NSURL(string: "https://example.com")!)
 
         courier.subscribeToChannel("channel", withToken: NSData())
 
@@ -134,7 +134,7 @@ class CourierSpec: QuickSpec {
 
       it("supports changing the default environment") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", urlSession: session, environment: .Development)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
         courier.subscribeToChannel("channel", withToken: NSData())
 
@@ -143,7 +143,7 @@ class CourierSpec: QuickSpec {
 
       it("sets the device token") {
         let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)!
-        let courier = Courier(apiToken: "")
+        let courier = Courier(apiToken: "", environment: .Development)
 
         courier.subscribeToChannel("channel", withToken: deviceToken)
 

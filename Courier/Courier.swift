@@ -28,9 +28,9 @@ public final class Courier {
 
   public init(
     apiToken: String,
+    environment: Environment,
     urlSession: URLSession = NSURLSession.sharedSession(),
-    baseURL: NSURL = defaultBaseURL,
-    environment: Environment = .Production
+    baseURL: NSURL = defaultBaseURL
   ) {
     self.apiToken = apiToken
     self.urlSession = urlSession

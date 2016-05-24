@@ -16,6 +16,8 @@
 		A15002FD1CC51C980036CAF5 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15002F71CC51C4F0036CAF5 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A15003001CC51F930036CAF5 /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15002FF1CC51F930036CAF5 /* URLSession.swift */; };
 		A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15003011CC51FF70036CAF5 /* URLSessionTask.swift */; };
+		A17699511CF59DB9000C7D15 /* CourierResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17699501CF59DB9000C7D15 /* CourierResult.swift */; };
+		A1B8D8321CF3D40B001E0FA5 /* CourierError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B8D8311CF3D40B001E0FA5 /* CourierError.swift */; };
 		A1C837261CB6446100F4BB21 /* Courier.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C837251CB6446100F4BB21 /* Courier.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1C8372E1CB644DA00F4BB21 /* Courier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C8372D1CB644DA00F4BB21 /* Courier.swift */; };
 /* End PBXBuildFile section */
@@ -53,6 +55,8 @@
 		A15002F71CC51C4F0036CAF5 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
 		A15002FF1CC51F930036CAF5 /* URLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSession.swift; sourceTree = "<group>"; };
 		A15003011CC51FF70036CAF5 /* URLSessionTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionTask.swift; sourceTree = "<group>"; };
+		A17699501CF59DB9000C7D15 /* CourierResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierResult.swift; sourceTree = "<group>"; };
+		A1B8D8311CF3D40B001E0FA5 /* CourierError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierError.swift; sourceTree = "<group>"; };
 		A1C837221CB6446100F4BB21 /* Courier.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Courier.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C837251CB6446100F4BB21 /* Courier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Courier.h; sourceTree = "<group>"; };
 		A1C837271CB6446100F4BB21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -84,6 +88,8 @@
 			isa = PBXGroup;
 			children = (
 				A13280B01CCE66D400D3E964 /* Environment.swift */,
+				A1B8D8311CF3D40B001E0FA5 /* CourierError.swift */,
+				A17699501CF59DB9000C7D15 /* CourierResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -264,8 +270,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */,
+				A17699511CF59DB9000C7D15 /* CourierResult.swift in Sources */,
 				A13280B11CCE66D400D3E964 /* Environment.swift in Sources */,
 				A15003001CC51F930036CAF5 /* URLSession.swift in Sources */,
+				A1B8D8321CF3D40B001E0FA5 /* CourierError.swift in Sources */,
 				A1C8372E1CB644DA00F4BB21 /* Courier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

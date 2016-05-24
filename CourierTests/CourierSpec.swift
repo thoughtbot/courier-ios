@@ -4,7 +4,7 @@ import Courier
 
 class CourierSpec: QuickSpec {
   override func spec() {
-    context("deviceToken=") {
+    describe("deviceToken=") {
       it("stores the token in user defaults") {
         let apiToken = "test"
         let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
@@ -32,7 +32,7 @@ class CourierSpec: QuickSpec {
       }
     }
 
-    context("subscribeToChannel") {
+    describe("subscribeToChannel") {
       it("subscribes to the channel using a previously registered token") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
@@ -46,7 +46,7 @@ class CourierSpec: QuickSpec {
       }
     }
 
-    context("subscribeToChannel(withToken:)") {
+    describe("subscribeToChannel(withToken:)") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
@@ -149,6 +149,58 @@ class CourierSpec: QuickSpec {
 
         expect(courier.deviceToken) == deviceToken
       }
+
+      context("success") {
+        it("calls the completion block") {
+          let session = TestURLSession()
+          let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+
+          waitUntil { done in
+            courier.subscribeToChannel("channel", withToken: NSData()) { result in
+              expect(result) == CourierResult.Success
+              done()
+            }
+
+            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 200, HTTPVersion: .None, headerFields: .None)
+            session.lastRequest?.perform(response: response)
+          }
+        }
+      }
+
+      context("when an error occurs") {
+        it("calls the completion block with an error") {
+          let session = TestURLSession()
+          let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+          let error = NSError(domain: "", code: 0, userInfo: nil)
+
+          waitUntil { done in
+            courier.subscribeToChannel("channel", withToken: NSData()) {
+              expect($0) == CourierResult.Error(.Other(error: error))
+              done()
+            }
+
+            session.lastRequest?.perform(error: error)
+          }
+        }
+      }
+
+      context("when an the status code is not 2xx") {
+        it("calls the completion block with an error") {
+          let session = TestURLSession()
+          let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+
+          waitUntil { done in
+            courier.subscribeToChannel("channel", withToken: NSData()) { result in
+              expect(result) == CourierResult.Error(.InvalidStatusCode(404))
+
+              done()
+            }
+
+            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 404, HTTPVersion: .None, headerFields: .None)
+            session.lastRequest?.perform(response: response)
+          }
+        }
+      }
     }
 
     afterEach {
@@ -162,16 +214,35 @@ class CourierSpec: QuickSpec {
 private class TestURLSession: URLSession {
   var task: TestURLSessionTask
 
-  var requests: [NSURLRequest] = []
-  var lastRequest: NSURLRequest? { return requests.last }
+  var requests: [TestRequest] = []
+  var lastRequest: TestRequest? { return requests.last }
 
   init(task: TestURLSessionTask = TestURLSessionTask()) {
     self.task = task
   }
 
   private func dataTaskWithRequest(request: NSURLRequest, completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void) -> URLSessionTask {
-    requests.append(request)
+    requests.append(
+      TestRequest(request: request, completionHandler: completionHandler)
+    )
     return task
+  }
+}
+
+private struct TestRequest {
+  let request: NSURLRequest
+  let completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void
+
+  var URL: NSURL? { return request.URL }
+  var HTTPMethod: String? { return request.HTTPMethod }
+  var HTTPBody: NSData? { return request.HTTPBody }
+
+  func valueForHTTPHeaderField(field: String) -> String? {
+    return request.valueForHTTPHeaderField(field)
+  }
+
+  func perform(data data: NSData? = nil, response: NSURLResponse? = nil, error: NSError? = nil) {
+    completionHandler(data, response, error)
   }
 }
 

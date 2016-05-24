@@ -50,7 +50,7 @@ public final class Courier {
     subscribeToChannel(channel, withToken: deviceToken)
   }
 
-  public func subscribeToChannel(channel: String, withToken token: NSData) {
+  public func subscribeToChannel(channel: String, withToken token: NSData, completionHandler: ((CourierResult) -> Void)? = nil) {
     deviceToken = token
 
     guard let url = URLForChannel(channel, environment: environment) else {
@@ -65,12 +65,16 @@ public final class Courier {
 
     request.HTTPBody = HTTPBodyForToken(token)
     urlSession.dataTaskWithRequest(request) { data, response, error in
+
       if let error = error {
-        NSLog("PUT /subscribe/\(channel) error: \(error)")
-      } else if let response = response as? NSHTTPURLResponse {
-        NSLog("PUT /subscribe/\(channel) \(response.statusCode)")
+        completionHandler?(.Error(.Other(error: error)))
       } else {
-        NSLog("PUT /subscribe/\(channel) invalid response type \(response)")
+        let statusCode = (response as? NSHTTPURLResponse)?.statusCode
+        if case .Some(200...299) = statusCode {
+          completionHandler?(.Success)
+        } else {
+          completionHandler?(.Error(.InvalidStatusCode(statusCode)))
+        }
       }
     }.resume()
   }

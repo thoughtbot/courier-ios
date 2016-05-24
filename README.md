@@ -43,11 +43,13 @@ Then run `pod install` with CocoaPods 0.36 or newer.
 
 ### Usage
 
-Instantiate a Courier instance with your app's API token:
+Instantiate a Courier instance with your app's API token and an environment:
 
 ```swift
-let courier = Courier.init(apiToken: "[YOUR_API_TOKEN]")
+let courier = Courier.init(apiToken: "[YOUR_API_TOKEN]", environment: .Development)
 ```
+
+For the environment choose `.Development` if you're sending notifications to a development build of your app. If you're sending notification to an app signed with a distribution certificate (TestFlight, HockeyApp, AppStore, etc) use `.Production`.
 
 Register your app for remote notifications:
 
@@ -90,7 +92,7 @@ $ curl -X POST \
 -H "Content-Type: application/json" \
 -H "Authorization: Token token=[YOUR_API_TOKEN]" \
 -H "Accept: application/json version=1" \
-"https://courier.thoughtbot.com/broadcast/[CHANNEL_NAME]"
+"https://courier.thoughtbot.com/broadcast/[CHANNEL_NAME]?environment=development"
 ```
 
 ## Contributing
@@ -102,8 +104,7 @@ See the [CONTRIBUTING] document. Thank you, [contributors]!
 
 ## License
 
-Courier iOS is Copyright (c) 2016 thoughtbot, inc. It is free software, and may be
-redistributed under the terms specified in the [LICENSE] file.
+Courier iOS is Copyright (c) 2016 thoughtbot, inc. It is free software, and may be redistributed under the terms specified in the [LICENSE] file.
 
 [LICENSE]: /LICENSE
 
@@ -111,8 +112,7 @@ redistributed under the terms specified in the [LICENSE] file.
 
 ![thoughtbot](https://thoughtbot.com/logo.png)
 
-Courier iOS is maintained and funded by thoughtbot, inc. The names and logos for
-thoughtbot are trademarks of thoughtbot, inc.
+Courier iOS is maintained and funded by thoughtbot, inc. The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 
 We love open source software! See [our other projects][community] or look at
 our product [case studies] and [hire us][hire] to help build your iOS app.

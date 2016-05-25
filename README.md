@@ -1,4 +1,4 @@
-# Courier iOS
+# Courier iOS ![Build status](https://circleci.com/gh/thoughtbot/courier-ios.svg?style=shield&circle-token=061ff707780f9fb3093d68d5dbf909e2cdf8099a)
 
 iOS framework for integrating with the [Courier API].
 

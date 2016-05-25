@@ -184,7 +184,7 @@ class CourierSpec: QuickSpec {
         }
       }
 
-      context("when an the status code is not 2xx") {
+      context("when the status code is not 2xx") {
         it("calls the completion block with an error") {
           let session = TestURLSession()
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
@@ -193,6 +193,147 @@ class CourierSpec: QuickSpec {
             courier.subscribeToChannel("channel", withToken: NSData()) { result in
               expect(result) == CourierResult.Error(.InvalidStatusCode(404))
 
+              done()
+            }
+
+            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 404, HTTPVersion: .None, headerFields: .None)
+            session.lastRequest?.perform(response: response)
+          }
+        }
+      }
+    }
+
+    describe("unsubscribeFromChannel") {
+      it("requests the /subscribe/[channel] endpoint") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+
+        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
+      }
+
+      it("uses DELETE") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+
+        expect(session.lastRequest?.HTTPMethod) == "DELETE"
+      }
+
+      it("resumes the data task") {
+        let task = TestURLSessionTask()
+        let session = TestURLSession(task: task)
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+
+        expect(task.resumed) == true
+      }
+
+      it("uses the API token for authentication") {
+        let apiToken = "api_key"
+        let session = TestURLSession()
+        let courier = Courier(apiToken: apiToken, environment: .Development, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.unsubscribeFromChannel("Test")
+
+        expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiToken)"
+      }
+
+      it("specifies the default version to use") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.unsubscribeFromChannel("Test")
+
+        expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("version=1"))
+      }
+
+      it("accepts application/json") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.unsubscribeFromChannel("Test")
+
+        expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("application/json"))
+      }
+
+      it("sends application/json") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+        courier.unsubscribeFromChannel("Test")
+
+        expect(session.lastRequest?.valueForHTTPHeaderField("Content-Type")) == "application/json"
+      }
+
+      it("sends the device in the DELETE body") {
+        let session = TestURLSession()
+        let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+        let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
+        courier.deviceToken = dataFromHexadecimalString(token)
+
+        courier.unsubscribeFromChannel("Test")
+
+        let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        expect(body).to(equal(["device": ["token": token]] as NSDictionary))
+      }
+
+      context("success") {
+        it("calls the completion block") {
+          let session = TestURLSession()
+          let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+          courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+          waitUntil { done in
+            courier.unsubscribeFromChannel("channel") { result in
+              expect(result) == CourierResult.Success
+              done()
+            }
+
+            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 200, HTTPVersion: .None, headerFields: .None)
+            session.lastRequest?.perform(response: response)
+          }
+        }
+      }
+
+      context("when an error occurs") {
+        it("calls the completion block with an error") {
+          let session = TestURLSession()
+          let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+          courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+          let error = NSError(domain: "", code: 0, userInfo: nil)
+
+          waitUntil { done in
+            courier.unsubscribeFromChannel("channel") {
+              expect($0) == CourierResult.Error(.Other(error: error))
+              done()
+            }
+
+            session.lastRequest?.perform(error: error)
+          }
+        }
+      }
+
+      context("when the status code is not 2xx") {
+        it("calls the completion block with an error") {
+          let session = TestURLSession()
+          let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
+          courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+
+          waitUntil { done in
+            courier.unsubscribeFromChannel("channel") { result in
+              expect(result) == CourierResult.Error(.InvalidStatusCode(404))
               done()
             }
 

@@ -106,6 +106,9 @@ $ curl -X POST \
 "https://courier.thoughtbot.com/broadcast/[CHANNEL_NAME]?environment=development"
 ```
 
+Unsubscribe from broadcasts to a channel using
+`unsubscribeFromChannel("[CHANNEL_NAME]")`.
+
 ## Contributing
 
 See the [CONTRIBUTING] document. Thank you, [contributors]!

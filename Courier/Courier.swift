@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias CourierCompletionHandler = (CourierResult) -> Void
+
 public final class Courier {
   static let defaultBaseURL = NSURL(string: "https://courier.thoughtbot.com/")!
 
@@ -38,7 +40,7 @@ public final class Courier {
     self.environment = environment
   }
 
-  public func subscribeToChannel(channel: String) {
+  public func subscribeToChannel(channel: String, completionHandler: CourierCompletionHandler? = nil) {
     guard let deviceToken = deviceToken else {
       preconditionFailure(
         "Cannot subscribe to a channel without a device token."
@@ -47,42 +49,35 @@ public final class Courier {
       )
     }
 
-    subscribeToChannel(channel, withToken: deviceToken)
+    subscribeToChannel(channel, withToken: deviceToken, completionHandler: completionHandler)
   }
 
-  public func subscribeToChannel(channel: String, withToken token: NSData, completionHandler: ((CourierResult) -> Void)? = nil) {
+  public func subscribeToChannel(
+    channel: String,
+    withToken token: NSData,
+    completionHandler: CourierCompletionHandler? = nil
+  ) {
     deviceToken = token
+    httpRequest("PUT", channel: channel, token: token, completionHandler: completionHandler)
+  }
 
-    guard let url = URLForChannel(channel, environment: environment) else {
-      fatalError("Failed to create URL for channel: \(channel) in environment: \(environment)")
+  public func unsubscribeFromChannel(channel: String, completionHandler: CourierCompletionHandler? = nil) {
+    guard let deviceToken = deviceToken else {
+      preconditionFailure(
+        "Cannot subscribe to a channel without a device token."
+        + "Set courier.deviceToken in your"
+        + "UIApplicationDelegate application(_:didRegisterForRemoteNotificationsWithDeviceToken:)"
+      )
     }
-
-    let request = NSMutableURLRequest(URL: url)
-    request.HTTPMethod = "PUT"
-    request.setValue("Token token=\(apiToken)", forHTTPHeaderField: "Authorization")
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.setValue("application/json version=\(apiVersion)", forHTTPHeaderField: "Accept")
-
-    request.HTTPBody = HTTPBodyForToken(token)
-    urlSession.dataTaskWithRequest(request) { data, response, error in
-
-      if let error = error {
-        completionHandler?(.Error(.Other(error: error)))
-      } else {
-        let statusCode = (response as? NSHTTPURLResponse)?.statusCode
-        if case .Some(200...299) = statusCode {
-          completionHandler?(.Success)
-        } else {
-          completionHandler?(.Error(.InvalidStatusCode(statusCode)))
-        }
-      }
-    }.resume()
+    unsubscribeToken(deviceToken, fromChannel: channel, completionHandler: completionHandler)
   }
 }
 
 private extension Courier {
   func HTTPBodyForToken(token: NSData) -> NSData {
-    return try! NSJSONSerialization.dataWithJSONObject(["device": ["token": tokenStringFromData(token)]], options: [])
+    return try! NSJSONSerialization.dataWithJSONObject(
+      ["device": ["token": tokenStringFromData(token)]], options: []
+    )
   }
 
   func tokenStringFromData(data: NSData) -> String {
@@ -107,6 +102,42 @@ private extension Courier {
     return transliterated.stringByReplacingMatches(specialCharactersRegex, withString: "-")
       .stringByReplacingMatches(leadingTrailingSeparatorRegex, withString: "")
       .stringByReplacingMatches(repeatingSeperatorRegex, withString: "-")
+  }
+
+  func unsubscribeToken(token: NSData, fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
+    httpRequest("DELETE", channel: channel, token: token, completionHandler: completionHandler)
+  }
+
+  private func httpRequest(
+    method: String,
+    channel: String,
+    token: NSData,
+    completionHandler: CourierCompletionHandler? = nil
+  ) {
+    guard let url = URLForChannel(channel, environment: environment) else {
+      fatalError("Failed to create URL for channel: \(channel) in environment: \(environment)")
+    }
+
+    let request = NSMutableURLRequest(URL: url)
+    request.HTTPMethod = method
+    request.HTTPBody = HTTPBodyForToken(token)
+
+    request.setValue("Token token=\(apiToken)", forHTTPHeaderField: "Authorization")
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.setValue("application/json version=\(apiVersion)", forHTTPHeaderField: "Accept")
+
+    urlSession.dataTaskWithRequest(request) { data, response, error in
+      if let error = error {
+        completionHandler?(.Error(.Other(error: error)))
+      } else {
+        let statusCode = (response as? NSHTTPURLResponse)?.statusCode
+        if case .Some(200...299) = statusCode {
+          completionHandler?(.Success)
+        } else {
+          completionHandler?(.Error(.InvalidStatusCode(statusCode)))
+        }
+      }
+    }.resume()
   }
 
   func URLForChannel(channel: String, environment: Environment) -> NSURL? {

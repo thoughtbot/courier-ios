@@ -17,7 +17,7 @@ public final class Courier {
   private let repeatingSeperatorRegex = try! NSRegularExpression(pattern: "-{2,}", options: .CaseInsensitive)
 
   private var userDefaultsKey: String {
-    return "com.thoughtbot.courier.\(apiToken).device_token"
+    return "com.thoughtbot.courier.device_token"
   }
   public var deviceToken: NSData? {
     get {

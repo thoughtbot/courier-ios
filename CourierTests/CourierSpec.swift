@@ -13,7 +13,7 @@ class CourierSpec: QuickSpec {
         courier.deviceToken = deviceToken
 
         let userDefaults = NSUserDefaults.standardUserDefaults()
-        let key = "com.thoughtbot.courier.\(apiToken).device_token"
+        let key = "com.thoughtbot.courier.device_token"
         expect(userDefaults.dataForKey(key)) == deviceToken
       }
 
@@ -22,13 +22,6 @@ class CourierSpec: QuickSpec {
         Courier(apiToken: "", environment: .Development).deviceToken = deviceToken
 
         expect(Courier(apiToken: "", environment: .Development).deviceToken) == deviceToken
-      }
-
-      it("uses different tokens for instances with different API tokens") {
-        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
-        Courier(apiToken: "1", environment: .Development).deviceToken = deviceToken
-
-        expect(Courier(apiToken: "2", environment: .Development).deviceToken).to(beNil())
       }
     }
 
@@ -345,9 +338,7 @@ class CourierSpec: QuickSpec {
     }
 
     afterEach {
-      let userDefaults = NSUserDefaults.standardUserDefaults()
-      let dictionary = userDefaults.dictionaryRepresentation()
-      dictionary.keys.forEach(userDefaults.removeObjectForKey)
+      NSUserDefaults.standardUserDefaults().removeObjectForKey("com.thoughtbot.courier.device_token")
     }
   }
 }

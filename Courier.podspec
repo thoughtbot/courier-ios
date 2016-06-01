@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "Courier"
-  s.version = "0.0.1"
+  s.version = "0.1.0"
   s.summary = "Simple Push Notifications."
   s.homepage = "https://courier.thoughtbot.com"
   s.license = { :type => "MIT", :file => "LICENSE" }

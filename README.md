@@ -30,7 +30,7 @@ https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
 Add the following to your [Podfile](http://guides.cocoapods.org/using/the-podfile.html):
 
 ```ruby
-pod "courier-ios"
+pod "courier-notifications"
 ```
 
 You will also need to make sure you're opting into using frameworks:

@@ -3,18 +3,8 @@ machine:
     version: "8.0"
 
 dependencies:
-  pre:
-    - bin/install-carthage
   override:
-    - bin/carthage-bootstrap-if-needed
-  cache_directories:
-    - "Carthage"
-
-test:
-  override:
-    - bin/test
-  cache_directories:
-    - "Carthage"
+    - bin/setup
 
 test:
   override:

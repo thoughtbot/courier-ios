@@ -100,9 +100,9 @@ public final class Courier {
 
     - precondition: The deviceToken must be non-nil.
 
-    - seealso: subscribeToChannel(_:,withToken:completionHandler:)
+    - seealso: subscribe(toChannel:withToken:completionHandler:)
   */
-  public func subscribeToChannel(_ channel: String, completionHandler: CourierCompletionHandler? = nil) {
+  public func subscribe(toChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
     guard let deviceToken = deviceToken else {
       preconditionFailure(
         "Cannot subscribe to a channel without a device token."
@@ -111,7 +111,7 @@ public final class Courier {
       )
     }
 
-    subscribeToChannel(channel, withToken: deviceToken, completionHandler: completionHandler)
+    subscribe(toChannel: channel, withToken: deviceToken, completionHandler: completionHandler)
   }
 
   /**
@@ -122,8 +122,8 @@ public final class Courier {
      - token: The device token to subscribe with.
      - completionHandler: An optional completion handler to call when the request is complete.
   */
-  public func subscribeToChannel(
-    _ channel: String,
+  public func subscribe(
+    toChannel channel: String,
     withToken token: Data,
     completionHandler: CourierCompletionHandler? = nil
   ) {
@@ -140,7 +140,7 @@ public final class Courier {
 
    - precondition: The deviceToken must be non-nil.
   */
-  public func unsubscribeFromChannel(_ channel: String, completionHandler: CourierCompletionHandler? = nil) {
+  public func unsubscribe(fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
     guard let deviceToken = deviceToken else {
       preconditionFailure(
         "Cannot subscribe to a channel without a device token."
@@ -148,20 +148,20 @@ public final class Courier {
         + "UIApplicationDelegate application(_:didRegisterForRemoteNotificationsWithDeviceToken:)"
       )
     }
-    unsubscribeToken(deviceToken, fromChannel: channel, completionHandler: completionHandler)
+    unsubscribe(withToken: deviceToken, fromChannel: channel, completionHandler: completionHandler)
   }
 }
 
 private extension Courier {
-  func HTTPBodyForToken(_ token: Data) -> Data {
+  func httpBody(forToken token: Data) -> Data {
     do {
-      return try JSONSerialization.data(withJSONObject: ["device": ["token": tokenStringFromData(token)]], options: [])
+      return try JSONSerialization.data(withJSONObject: ["device": ["token": tokenString(fromData: token)]], options: [])
     } catch {
       preconditionFailure("Couldn't create JSON from token string")
     }
   }
 
-  func tokenStringFromData(_ data: Data) -> String {
+  func tokenString(fromData data: Data) -> String {
     let tokenChars = (data as NSData).bytes.bindMemory(to: CChar.self, capacity: data.count)
     var tokenString = ""
 
@@ -194,7 +194,7 @@ private extension Courier {
       .stringByReplacingMatches(repeatingSeperatorRegex, withString: "-")
   }
 
-  func unsubscribeToken(_ token: Data, fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
+  func unsubscribe(withToken token: Data, fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
     httpRequest("DELETE", channel: channel, token: token, completionHandler: completionHandler)
   }
 
@@ -204,13 +204,13 @@ private extension Courier {
     token: Data,
     completionHandler: CourierCompletionHandler? = nil
   ) {
-    guard let url = URLForChannel(channel, environment: environment) else {
+    guard let url = url(forChannel: channel, environment: environment) else {
       fatalError("Failed to create URL for channel: \(channel) in environment: \(environment)")
     }
 
     let request = NSMutableURLRequest(url: url)
     request.httpMethod = method
-    request.httpBody = HTTPBodyForToken(token)
+    request.httpBody = httpBody(forToken: token)
 
     request.setValue("Token token=\(apiToken)", forHTTPHeaderField: "Authorization")
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -230,7 +230,7 @@ private extension Courier {
     }.resume()
   }
 
-  func URLForChannel(_ channel: String, environment: Environment) -> URL? {
+  func url(forChannel channel: String, environment: Environment) -> URL? {
     var components = URLComponents()
     components.path = "subscribe/\(self.parameterizeString(channel))"
     components.queryItems = [URLQueryItem(name: "environment", value: self.environment.rawValue)]

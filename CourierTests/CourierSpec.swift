@@ -34,19 +34,19 @@ class CourierSpec: QuickSpec {
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
         courier.deviceToken = dataFromHexadecimalString(token)!
-        courier.subscribeToChannel("Test")
+        courier.subscribe(toChannel: "Test")
 
         let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
     }
 
-    describe("subscribeToChannel(withToken:)") {
+    describe("subscribe(toChannel: withToken:)") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
 
-        courier.subscribeToChannel("!Tést/chännél! !test!", withToken: Data())
+        courier.subscribe(toChannel: "!Tést/chännél! !test!", withToken: Data())
 
         expect(session.lastRequest?.URL) == URL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
       }
@@ -55,7 +55,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: Data())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.HTTPMethod) == "PUT"
       }
@@ -65,7 +65,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession(task: task)
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: Data())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(task.resumed) == true
       }
@@ -75,7 +75,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: apiToken, environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: Data())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiToken)"
       }
@@ -84,7 +84,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: Data())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("version=1"))
       }
@@ -93,7 +93,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: Data())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("application/json"))
       }
@@ -102,7 +102,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: Data())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Content-Type")) == "application/json"
       }
@@ -112,7 +112,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
-        courier.subscribeToChannel("Test", withToken: dataFromHexadecimalString(token)!)
+        courier.subscribe(toChannel: "Test", withToken: dataFromHexadecimalString(token)!)
 
         let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
@@ -122,7 +122,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Production, urlSession: session, baseURL: URL(string: "https://example.com")!)
 
-        courier.subscribeToChannel("channel", withToken: Data())
+        courier.subscribe(toChannel: "channel", withToken: Data())
 
         expect(session.lastRequest?.URL) == URL(string: "https://example.com/subscribe/channel?environment=production")
       }
@@ -131,7 +131,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("channel", withToken: Data())
+        courier.subscribe(toChannel: "channel", withToken: Data())
 
         expect(session.lastRequest?.URL) == URL(string: "https://courier.thoughtbot.com/subscribe/channel?environment=development")
       }
@@ -140,7 +140,7 @@ class CourierSpec: QuickSpec {
         let deviceToken = "DEVICE_TOKEN".data(using: String.Encoding.utf8)!
         let courier = Courier(apiToken: "", environment: .Development)
 
-        courier.subscribeToChannel("channel", withToken: deviceToken)
+        courier.subscribe(toChannel: "channel", withToken: deviceToken)
 
         expect(courier.deviceToken) == deviceToken
       }
@@ -151,7 +151,7 @@ class CourierSpec: QuickSpec {
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
           waitUntil { done in
-            courier.subscribeToChannel("channel", withToken: Data()) { result in
+            courier.subscribe(toChannel: "channel", withToken: Data()) { result in
               expect(result) == CourierResult.success
               done()
             }
@@ -169,7 +169,7 @@ class CourierSpec: QuickSpec {
           let error = NSError(domain: "", code: 0, userInfo: nil)
 
           waitUntil { done in
-            courier.subscribeToChannel("channel", withToken: Data()) {
+            courier.subscribe(toChannel: "channel", withToken: Data()) {
               expect($0) == CourierResult.error(.other(error: error))
               done()
             }
@@ -185,7 +185,7 @@ class CourierSpec: QuickSpec {
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
           waitUntil { done in
-            courier.subscribeToChannel("channel", withToken: Data()) { result in
+            courier.subscribe(toChannel: "channel", withToken: Data()) { result in
               expect(result) == CourierResult.error(.invalidStatusCode(404))
 
               done()
@@ -204,7 +204,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+        courier.unsubscribe(fromChannel: "!Tést/chännél! !test!")
 
         expect(session.lastRequest?.URL) == URL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
       }
@@ -214,7 +214,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+        courier.unsubscribe(fromChannel: "!Tést/chännél! !test!")
 
         expect(session.lastRequest?.HTTPMethod) == "DELETE"
       }
@@ -225,7 +225,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+        courier.unsubscribe(fromChannel: "!Tést/chännél! !test!")
 
         expect(task.resumed) == true
       }
@@ -236,8 +236,8 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: apiToken, environment: .Development, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.subscribeToChannel("Test", withToken: Data())
-        courier.unsubscribeFromChannel("Test")
+        courier.subscribe(toChannel: "Test", withToken: Data())
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiToken)"
       }
@@ -247,7 +247,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("version=1"))
       }
@@ -257,7 +257,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("application/json"))
       }
@@ -267,7 +267,7 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Content-Type")) == "application/json"
       }
@@ -278,7 +278,7 @@ class CourierSpec: QuickSpec {
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
         courier.deviceToken = dataFromHexadecimalString(token)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
@@ -291,7 +291,7 @@ class CourierSpec: QuickSpec {
           courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
           waitUntil { done in
-            courier.unsubscribeFromChannel("channel") { result in
+            courier.unsubscribe(fromChannel: "channel") { result in
               expect(result) == CourierResult.success
               done()
             }
@@ -310,7 +310,7 @@ class CourierSpec: QuickSpec {
           let error = NSError(domain: "", code: 0, userInfo: nil)
 
           waitUntil { done in
-            courier.unsubscribeFromChannel("channel") {
+            courier.unsubscribe(fromChannel: "channel") {
               expect($0) == CourierResult.error(.other(error: error))
               done()
             }
@@ -327,7 +327,7 @@ class CourierSpec: QuickSpec {
           courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
           waitUntil { done in
-            courier.unsubscribeFromChannel("channel") { result in
+            courier.unsubscribe(fromChannel: "channel") { result in
               expect(result) == CourierResult.error(.invalidStatusCode(404))
               done()
             }

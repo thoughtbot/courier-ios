@@ -154,9 +154,11 @@ public final class Courier {
 
 private extension Courier {
   func HTTPBodyForToken(_ token: Data) -> Data {
-    return try! JSONSerialization.data(
-      withJSONObject: ["device": ["token": tokenStringFromData(token)]], options: []
-    )
+    do {
+      return try JSONSerialization.data(withJSONObject: ["device": ["token": tokenStringFromData(token)]], options: [])
+    } catch {
+      preconditionFailure("Couldn't create JSON from token string")
+    }
   }
 
   func tokenStringFromData(_ data: Data) -> String {

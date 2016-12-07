@@ -36,7 +36,7 @@ class CourierSpec: QuickSpec {
         courier.deviceToken = dataFromHexadecimalString(token)!
         courier.subscribeToChannel("Test")
 
-        let body = try! JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
     }
@@ -114,7 +114,7 @@ class CourierSpec: QuickSpec {
 
         courier.subscribeToChannel("Test", withToken: dataFromHexadecimalString(token)!)
 
-        let body = try! JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
 
@@ -280,7 +280,7 @@ class CourierSpec: QuickSpec {
 
         courier.unsubscribeFromChannel("Test")
 
-        let body = try! JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
 

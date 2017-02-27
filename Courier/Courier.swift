@@ -162,11 +162,10 @@ private extension Courier {
   }
 
   func tokenString(fromData data: Data) -> String {
-    let tokenChars = (data as NSData).bytes.bindMemory(to: CChar.self, capacity: data.count)
     var tokenString = ""
 
-    for index in 0..<data.count {
-      tokenString += String(format: "%02.2hhx", arguments: [tokenChars[index]])
+    for char in data {
+      tokenString += String(format: "%02.2hhx", arguments: [char])
     }
 
     return tokenString

@@ -208,7 +208,7 @@ private extension Courier {
       fatalError("Failed to create URL for channel: \(channel) in environment: \(environment)")
     }
 
-    let request = NSMutableURLRequest(url: url)
+    var request = URLRequest(url: url)
     request.httpMethod = method
     request.httpBody = httpBody(forToken: token)
 
@@ -216,7 +216,7 @@ private extension Courier {
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.setValue("application/json version=\(apiVersion)", forHTTPHeaderField: "Accept")
 
-    urlSession.dataTask(with: request as URLRequest) { data, response, error in
+    urlSession.dataTask(with: request) { data, response, error in
       if let error = error {
         completionHandler?(.error(.other(error: error as NSError)))
       } else {

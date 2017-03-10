@@ -124,7 +124,7 @@ Courier iOS is Copyright (c) 2016 thoughtbot, inc. It is free software, and may 
 
 ## About
 
-![thoughtbot](https://thoughtbot.com/logo.png)
+![thoughtbot](http://presskit.thoughtbot.com/images/thoughtbot-logo-for-readmes.svg)
 
 Courier iOS is maintained and funded by thoughtbot, inc. The names and logos for thoughtbot are trademarks of thoughtbot, inc.
 

@@ -3,22 +3,24 @@ import Nimble
 import Courier
 
 class CourierSpec: QuickSpec {
+  let blankTestURL = URL(string: "about:blank")
+
   override func spec() {
     describe("deviceToken=") {
       it("stores the token in user defaults") {
         let apiToken = "test"
-        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
+        let deviceToken = "DEVICE_TOKEN".data(using: String.Encoding.utf8)
         let courier = Courier(apiToken: apiToken, environment: .Development)
 
         courier.deviceToken = deviceToken
 
-        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let userDefaults = UserDefaults.standard
         let key = "com.thoughtbot.courier.device_token"
-        expect(userDefaults.dataForKey(key)) == deviceToken
+        expect(userDefaults.data(forKey: key)) == deviceToken
       }
 
       it("uses the same device token accross instances") {
-        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)
+        let deviceToken = "DEVICE_TOKEN".data(using: String.Encoding.utf8)
         Courier(apiToken: "", environment: .Development).deviceToken = deviceToken
 
         expect(Courier(apiToken: "", environment: .Development).deviceToken) == deviceToken
@@ -32,28 +34,28 @@ class CourierSpec: QuickSpec {
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
         courier.deviceToken = dataFromHexadecimalString(token)!
-        courier.subscribeToChannel("Test")
+        courier.subscribe(toChannel: "Test")
 
-        let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
     }
 
-    describe("subscribeToChannel(withToken:)") {
+    describe("subscribe(toChannel: withToken:)") {
       it("requests the /subscribe/[token] endpoint") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
 
-        courier.subscribeToChannel("!Tést/chännél! !test!", withToken: NSData())
+        courier.subscribe(toChannel: "!Tést/chännél! !test!", withToken: Data())
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
+        expect(session.lastRequest?.URL) == URL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
       }
 
       it("uses PUT") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.HTTPMethod) == "PUT"
       }
@@ -63,7 +65,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession(task: task)
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(task.resumed) == true
       }
@@ -73,7 +75,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: apiToken, environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiToken)"
       }
@@ -82,7 +84,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("version=1"))
       }
@@ -91,7 +93,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("application/json"))
       }
@@ -100,7 +102,7 @@ class CourierSpec: QuickSpec {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
+        courier.subscribe(toChannel: "Test", withToken: Data())
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Content-Type")) == "application/json"
       }
@@ -110,35 +112,35 @@ class CourierSpec: QuickSpec {
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
 
-        courier.subscribeToChannel("Test", withToken: dataFromHexadecimalString(token)!)
+        courier.subscribe(toChannel: "Test", withToken: dataFromHexadecimalString(token)!)
 
-        let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
 
       it("supports changing the default base URL") {
         let session = TestURLSession()
-        let courier = Courier(apiToken: "", environment: .Production, urlSession: session, baseURL: NSURL(string: "https://example.com")!)
+        let courier = Courier(apiToken: "", environment: .Production, urlSession: session, baseURL: URL(string: "https://example.com")!)
 
-        courier.subscribeToChannel("channel", withToken: NSData())
+        courier.subscribe(toChannel: "channel", withToken: Data())
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://example.com/subscribe/channel?environment=production")
+        expect(session.lastRequest?.URL) == URL(string: "https://example.com/subscribe/channel?environment=production")
       }
 
       it("supports changing the default environment") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
-        courier.subscribeToChannel("channel", withToken: NSData())
+        courier.subscribe(toChannel: "channel", withToken: Data())
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/channel?environment=development")
+        expect(session.lastRequest?.URL) == URL(string: "https://courier.thoughtbot.com/subscribe/channel?environment=development")
       }
 
       it("sets the device token") {
-        let deviceToken = "DEVICE_TOKEN".dataUsingEncoding(NSUTF8StringEncoding)!
+        let deviceToken = "DEVICE_TOKEN".data(using: String.Encoding.utf8)!
         let courier = Courier(apiToken: "", environment: .Development)
 
-        courier.subscribeToChannel("channel", withToken: deviceToken)
+        courier.subscribe(toChannel: "channel", withToken: deviceToken)
 
         expect(courier.deviceToken) == deviceToken
       }
@@ -149,12 +151,12 @@ class CourierSpec: QuickSpec {
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
           waitUntil { done in
-            courier.subscribeToChannel("channel", withToken: NSData()) { result in
-              expect(result) == CourierResult.Success
+            courier.subscribe(toChannel: "channel", withToken: Data()) { result in
+              expect(result) == CourierResult.success
               done()
             }
 
-            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 200, HTTPVersion: .None, headerFields: .None)
+            let response = HTTPURLResponse(url: URL(string: "about:blank")!, statusCode: 200, httpVersion: .none, headerFields: .none)
             session.lastRequest?.perform(response: response)
           }
         }
@@ -167,8 +169,8 @@ class CourierSpec: QuickSpec {
           let error = NSError(domain: "", code: 0, userInfo: nil)
 
           waitUntil { done in
-            courier.subscribeToChannel("channel", withToken: NSData()) {
-              expect($0) == CourierResult.Error(.Other(error: error))
+            courier.subscribe(toChannel: "channel", withToken: Data()) {
+              expect($0) == CourierResult.error(.other(error: error))
               done()
             }
 
@@ -183,13 +185,13 @@ class CourierSpec: QuickSpec {
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
 
           waitUntil { done in
-            courier.subscribeToChannel("channel", withToken: NSData()) { result in
-              expect(result) == CourierResult.Error(.InvalidStatusCode(404))
+            courier.subscribe(toChannel: "channel", withToken: Data()) { result in
+              expect(result) == CourierResult.error(.invalidStatusCode(404))
 
               done()
             }
 
-            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 404, HTTPVersion: .None, headerFields: .None)
+            let response = HTTPURLResponse(url: self.blankTestURL!, statusCode: 404, httpVersion: .none, headerFields: .none)
             session.lastRequest?.perform(response: response)
           }
         }
@@ -200,19 +202,19 @@ class CourierSpec: QuickSpec {
       it("requests the /subscribe/[channel] endpoint") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Production, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+        courier.unsubscribe(fromChannel: "!Tést/chännél! !test!")
 
-        expect(session.lastRequest?.URL) == NSURL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
+        expect(session.lastRequest?.URL) == URL(string: "https://courier.thoughtbot.com/subscribe/test-channel-test?environment=production")
       }
 
       it("uses DELETE") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+        courier.unsubscribe(fromChannel: "!Tést/chännél! !test!")
 
         expect(session.lastRequest?.HTTPMethod) == "DELETE"
       }
@@ -221,9 +223,9 @@ class CourierSpec: QuickSpec {
         let task = TestURLSessionTask()
         let session = TestURLSession(task: task)
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("!Tést/chännél! !test!")
+        courier.unsubscribe(fromChannel: "!Tést/chännél! !test!")
 
         expect(task.resumed) == true
       }
@@ -232,10 +234,10 @@ class CourierSpec: QuickSpec {
         let apiToken = "api_key"
         let session = TestURLSession()
         let courier = Courier(apiToken: apiToken, environment: .Development, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.subscribeToChannel("Test", withToken: NSData())
-        courier.unsubscribeFromChannel("Test")
+        courier.subscribe(toChannel: "Test", withToken: Data())
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Authorization")) == "Token token=\(apiToken)"
       }
@@ -243,9 +245,9 @@ class CourierSpec: QuickSpec {
       it("specifies the default version to use") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("version=1"))
       }
@@ -253,9 +255,9 @@ class CourierSpec: QuickSpec {
       it("accepts application/json") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Accept")).to(contain("application/json"))
       }
@@ -263,9 +265,9 @@ class CourierSpec: QuickSpec {
       it("sends application/json") {
         let session = TestURLSession()
         let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-        courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+        courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
         expect(session.lastRequest?.valueForHTTPHeaderField("Content-Type")) == "application/json"
       }
@@ -276,9 +278,9 @@ class CourierSpec: QuickSpec {
         let token = "93b40fbcf25480d515067ba49f98620e4ef38bdf7be9da6275f80c4f858f5ce2"
         courier.deviceToken = dataFromHexadecimalString(token)
 
-        courier.unsubscribeFromChannel("Test")
+        courier.unsubscribe(fromChannel: "Test")
 
-        let body = try! NSJSONSerialization.JSONObjectWithData(session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
+        let body = try? JSONSerialization.jsonObject(with: session.lastRequest!.HTTPBody!, options: []) as! NSDictionary
         expect(body).to(equal(["device": ["token": token]] as NSDictionary))
       }
 
@@ -286,15 +288,15 @@ class CourierSpec: QuickSpec {
         it("calls the completion block") {
           let session = TestURLSession()
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-          courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+          courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
           waitUntil { done in
-            courier.unsubscribeFromChannel("channel") { result in
-              expect(result) == CourierResult.Success
+            courier.unsubscribe(fromChannel: "channel") { result in
+              expect(result) == CourierResult.success
               done()
             }
 
-            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 200, HTTPVersion: .None, headerFields: .None)
+            let response = HTTPURLResponse(url: self.blankTestURL!, statusCode: 200, httpVersion: .none, headerFields: .none)
             session.lastRequest?.perform(response: response)
           }
         }
@@ -304,12 +306,12 @@ class CourierSpec: QuickSpec {
         it("calls the completion block with an error") {
           let session = TestURLSession()
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-          courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+          courier.deviceToken = "token".data(using: String.Encoding.utf8)
           let error = NSError(domain: "", code: 0, userInfo: nil)
 
           waitUntil { done in
-            courier.unsubscribeFromChannel("channel") {
-              expect($0) == CourierResult.Error(.Other(error: error))
+            courier.unsubscribe(fromChannel: "channel") {
+              expect($0) == CourierResult.error(.other(error: error))
               done()
             }
 
@@ -322,15 +324,15 @@ class CourierSpec: QuickSpec {
         it("calls the completion block with an error") {
           let session = TestURLSession()
           let courier = Courier(apiToken: "", environment: .Development, urlSession: session)
-          courier.deviceToken = "token".dataUsingEncoding(NSUTF8StringEncoding)
+          courier.deviceToken = "token".data(using: String.Encoding.utf8)
 
           waitUntil { done in
-            courier.unsubscribeFromChannel("channel") { result in
-              expect(result) == CourierResult.Error(.InvalidStatusCode(404))
+            courier.unsubscribe(fromChannel: "channel") { result in
+              expect(result) == CourierResult.error(.invalidStatusCode(404))
               done()
             }
 
-            let response = NSHTTPURLResponse(URL: NSURL(), statusCode: 404, HTTPVersion: .None, headerFields: .None)
+            let response = HTTPURLResponse(url: self.blankTestURL!, statusCode: 404, httpVersion: .none, headerFields: .none)
             session.lastRequest?.perform(response: response)
           }
         }
@@ -338,12 +340,12 @@ class CourierSpec: QuickSpec {
     }
 
     afterEach {
-      NSUserDefaults.standardUserDefaults().removeObjectForKey("com.thoughtbot.courier.device_token")
+      UserDefaults.standard.removeObject(forKey: "com.thoughtbot.courier.device_token")
     }
   }
 }
 
-private class TestURLSession: URLSession {
+private class TestURLSession: URLSessionProtocol {
   var task: TestURLSessionTask
 
   var requests: [TestRequest] = []
@@ -353,7 +355,7 @@ private class TestURLSession: URLSession {
     self.task = task
   }
 
-  private func dataTaskWithRequest(request: NSURLRequest, completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void) -> URLSessionTask {
+  fileprivate func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionTaskProtocol {
     requests.append(
       TestRequest(request: request, completionHandler: completionHandler)
     )
@@ -362,36 +364,36 @@ private class TestURLSession: URLSession {
 }
 
 private struct TestRequest {
-  let request: NSURLRequest
-  let completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void
+  let request: URLRequest
+  let completionHandler: (Data?, URLResponse?, NSError?) -> Void
 
-  var URL: NSURL? { return request.URL }
-  var HTTPMethod: String? { return request.HTTPMethod }
-  var HTTPBody: NSData? { return request.HTTPBody }
+  var URL: Foundation.URL? { return request.url }
+  var HTTPMethod: String? { return request.httpMethod }
+  var HTTPBody: Data? { return request.httpBody }
 
-  func valueForHTTPHeaderField(field: String) -> String? {
-    return request.valueForHTTPHeaderField(field)
+  func valueForHTTPHeaderField(_ field: String) -> String? {
+    return request.value(forHTTPHeaderField: field)
   }
 
-  func perform(data data: NSData? = nil, response: NSURLResponse? = nil, error: NSError? = nil) {
+  func perform(data: Data? = nil, response: URLResponse? = nil, error: NSError? = nil) {
     completionHandler(data, response, error)
   }
 }
 
-private class TestURLSessionTask: URLSessionTask {
+private class TestURLSessionTask: URLSessionTaskProtocol {
   var resumed = false
 
-  private func resume() {
+  fileprivate func resume() {
     resumed = true
   }
 }
 
-private func dataFromHexadecimalString(string: String) -> NSData? {
-  let trimmedString = string.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "<> ")).stringByReplacingOccurrencesOfString(" ", withString: "")
+private func dataFromHexadecimalString(_ string: String) -> Data? {
+  let trimmedString = string.trimmingCharacters(in: CharacterSet(charactersIn: "<> ")).replacingOccurrences(of: " ", with: "")
 
-  let regex = try! NSRegularExpression(pattern: "^[0-9a-f]*$", options: .CaseInsensitive)
+  let regex = try! NSRegularExpression(pattern: "^[0-9a-f]*$", options: .caseInsensitive)
 
-  let found = regex.firstMatchInString(trimmedString, options: [], range: NSRange(0..<trimmedString.characters.count))
+  let found = regex.firstMatch(in: trimmedString, options: [], range: NSRange(0..<trimmedString.characters.count))
   if found == nil || found?.range.location == NSNotFound || trimmedString.characters.count % 2 != 0 {
     return nil
   }
@@ -400,12 +402,13 @@ private func dataFromHexadecimalString(string: String) -> NSData? {
 
   var index = trimmedString.startIndex
   while index < trimmedString.endIndex {
-    let byteString = trimmedString.substringWithRange(index..<index.successor().successor())
-    let num = UInt8(byteString.withCString { strtoul($0, nil, 16) })
-    data?.appendBytes([num] as [UInt8], length: 1)
+    let byteString = trimmedString.substring(with: index..<trimmedString.index(index, offsetBy: 2))
 
-    index = index.successor().successor()
+    let num = UInt8(byteString.withCString { strtoul($0, nil, 16) })
+    data?.append([num] as [UInt8], length: 1)
+
+    index = trimmedString.index(index, offsetBy: 2)
   }
 
-  return data
+  return data as Data?
 }

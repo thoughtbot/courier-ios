@@ -6,7 +6,7 @@ public typealias CourierCompletionHandler = (CourierResult) -> Void
  Responsible for authenticating and communicating with an App in the Courier API.
 */
 public final class Courier {
-  static let defaultBaseURL = NSURL(string: "https://courier.thoughtbot.com/")!
+  static let defaultBaseURL = URL(string: "https://courier.thoughtbot.com/")!
 
   /**
    The Courier App API token. Find the API token on your app's page at [https://courier.thoughtbot.com](https://courier.thoughtbot.com).
@@ -21,12 +21,12 @@ public final class Courier {
   /**
    The URLSession used by this instance. The default is `NSURLSession.sharedSession`.
   */
-  let urlSession: URLSession
+  let urlSession: URLSessionProtocol
 
   /**
    The Courier API base URL this instance is communicating with. The default is https://courier.thoughtbot.com.
   */
-  let baseURL: NSURL
+  let baseURL: URL
 
   /**
    The environment used to communicate with the Courier API.
@@ -35,11 +35,11 @@ public final class Courier {
   */
   let environment: Environment
 
-  private let specialCharactersRegex = try! NSRegularExpression(pattern: "[^a-z0-9\\-_]+", options: .CaseInsensitive)
-  private let leadingTrailingSeparatorRegex = try! NSRegularExpression(pattern: "^-|-$", options: .CaseInsensitive)
-  private let repeatingSeperatorRegex = try! NSRegularExpression(pattern: "-{2,}", options: .CaseInsensitive)
+  fileprivate let specialCharactersRegex = try! NSRegularExpression(pattern: "[^a-z0-9\\-_]+", options: .caseInsensitive)
+  fileprivate let leadingTrailingSeparatorRegex = try! NSRegularExpression(pattern: "^-|-$", options: .caseInsensitive)
+  fileprivate let repeatingSeperatorRegex = try! NSRegularExpression(pattern: "-{2,}", options: .caseInsensitive)
 
-  private var userDefaultsKey: String {
+  fileprivate var userDefaultsKey: String {
     return "com.thoughtbot.courier.device_token"
   }
 
@@ -56,12 +56,12 @@ public final class Courier {
 
    [registering for remote notifications]: https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html#//apple_ref/doc/uid/TP40008194-CH103-SW2
   */
-  public var deviceToken: NSData? {
+  public var deviceToken: Data? {
     get {
-      return NSUserDefaults.standardUserDefaults().dataForKey(userDefaultsKey)
+      return UserDefaults.standard.data(forKey: userDefaultsKey)
     }
     set {
-      NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: userDefaultsKey)
+      UserDefaults.standard.set(newValue, forKey: userDefaultsKey)
     }
   }
 
@@ -71,7 +71,7 @@ public final class Courier {
     - parameters:
       - apiToken: The Courier App API token. Find the API token on your app's page at [https://courier.thoughtbot.com](https://courier.thoughtbot.com).
       - environment: The environment to use with Courier.
-      - urlSession: The URLSession used by this instance. The default is `NSURLSession.sharedSession()`. You should rarely, if ever, have to change this.
+      - urlSession: The URLSession used by this instance. The default is `Foundation.URLSession.shared`. You should rarely, if ever, have to change this.
       - baseURL: The Courier API base URL to communicating with. The default is https://courier.thoughtbot.com. You should rarely, if ever, have to change this.
 
     - seealso: `Environment` to learn which environment is appropriate.
@@ -81,8 +81,8 @@ public final class Courier {
   public init(
     apiToken: String,
     environment: Environment,
-    urlSession: URLSession = NSURLSession.sharedSession(),
-    baseURL: NSURL = defaultBaseURL
+    urlSession: URLSessionProtocol = Foundation.URLSession.shared,
+    baseURL: URL = defaultBaseURL
   ) {
 
     self.apiToken = apiToken
@@ -100,9 +100,9 @@ public final class Courier {
 
     - precondition: The deviceToken must be non-nil.
 
-    - seealso: subscribeToChannel(_:,withToken:completionHandler:)
+    - seealso: subscribe(toChannel:withToken:completionHandler:)
   */
-  public func subscribeToChannel(channel: String, completionHandler: CourierCompletionHandler? = nil) {
+  public func subscribe(toChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
     guard let deviceToken = deviceToken else {
       preconditionFailure(
         "Cannot subscribe to a channel without a device token."
@@ -111,7 +111,7 @@ public final class Courier {
       )
     }
 
-    subscribeToChannel(channel, withToken: deviceToken, completionHandler: completionHandler)
+    subscribe(toChannel: channel, withToken: deviceToken, completionHandler: completionHandler)
   }
 
   /**
@@ -122,9 +122,9 @@ public final class Courier {
      - token: The device token to subscribe with.
      - completionHandler: An optional completion handler to call when the request is complete.
   */
-  public func subscribeToChannel(
-    channel: String,
-    withToken token: NSData,
+  public func subscribe(
+    toChannel channel: String,
+    withToken token: Data,
     completionHandler: CourierCompletionHandler? = nil
   ) {
     deviceToken = token
@@ -140,7 +140,7 @@ public final class Courier {
 
    - precondition: The deviceToken must be non-nil.
   */
-  public func unsubscribeFromChannel(channel: String, completionHandler: CourierCompletionHandler? = nil) {
+  public func unsubscribe(fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
     guard let deviceToken = deviceToken else {
       preconditionFailure(
         "Cannot subscribe to a channel without a device token."
@@ -148,23 +148,24 @@ public final class Courier {
         + "UIApplicationDelegate application(_:didRegisterForRemoteNotificationsWithDeviceToken:)"
       )
     }
-    unsubscribeToken(deviceToken, fromChannel: channel, completionHandler: completionHandler)
+    unsubscribe(withToken: deviceToken, fromChannel: channel, completionHandler: completionHandler)
   }
 }
 
 private extension Courier {
-  func HTTPBodyForToken(token: NSData) -> NSData {
-    return try! NSJSONSerialization.dataWithJSONObject(
-      ["device": ["token": tokenStringFromData(token)]], options: []
-    )
+  func httpBody(forToken token: Data) -> Data {
+    do {
+      return try JSONSerialization.data(withJSONObject: ["device": ["token": tokenString(fromData: token)]], options: [])
+    } catch {
+      preconditionFailure("Couldn't create JSON from token string")
+    }
   }
 
-  func tokenStringFromData(data: NSData) -> String {
-    let tokenChars = UnsafePointer<CChar>(data.bytes)
+  func tokenString(fromData data: Data) -> String {
     var tokenString = ""
 
-    for index in 0..<data.length {
-      tokenString += String(format: "%02.2hhx", arguments: [tokenChars[index]])
+    for char in data {
+      tokenString += String(format: "%02.2hhx", arguments: [char])
     }
 
     return tokenString
@@ -179,66 +180,66 @@ private extension Courier {
 
    - seealso: [ActiveSupport::Inflector#parameterize](http://apidock.com/rails/ActiveSupport/Inflector/parameterize)
   */
-  func parameterizeString(string: String) -> String {
+  func parameterizeString(_ string: String) -> String {
     let mutableString = NSMutableString(string: string)
     CFStringTransform(mutableString, nil, kCFStringTransformToLatin, false)
     CFStringTransform(mutableString, nil, kCFStringTransformStripCombiningMarks, false)
     CFStringLowercase(mutableString, CFLocaleCopyCurrent())
 
-    let components = (mutableString as String).componentsSeparatedByCharactersInSet(.whitespaceAndNewlineCharacterSet())
-    let transliterated = components.filter { $0 != "" }.joinWithSeparator("-")
+    let components = mutableString.components(separatedBy: .whitespacesAndNewlines)
+    let transliterated = components.filter { $0 != "" }.joined(separator: "-")
     return transliterated.stringByReplacingMatches(specialCharactersRegex, withString: "-")
       .stringByReplacingMatches(leadingTrailingSeparatorRegex, withString: "")
       .stringByReplacingMatches(repeatingSeperatorRegex, withString: "-")
   }
 
-  func unsubscribeToken(token: NSData, fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
+  func unsubscribe(withToken token: Data, fromChannel channel: String, completionHandler: CourierCompletionHandler? = nil) {
     httpRequest("DELETE", channel: channel, token: token, completionHandler: completionHandler)
   }
 
-  private func httpRequest(
-    method: String,
+  func httpRequest(
+    _ method: String,
     channel: String,
-    token: NSData,
+    token: Data,
     completionHandler: CourierCompletionHandler? = nil
   ) {
-    guard let url = URLForChannel(channel, environment: environment) else {
+    guard let url = url(forChannel: channel, environment: environment) else {
       fatalError("Failed to create URL for channel: \(channel) in environment: \(environment)")
     }
 
-    let request = NSMutableURLRequest(URL: url)
-    request.HTTPMethod = method
-    request.HTTPBody = HTTPBodyForToken(token)
+    var request = URLRequest(url: url)
+    request.httpMethod = method
+    request.httpBody = httpBody(forToken: token)
 
     request.setValue("Token token=\(apiToken)", forHTTPHeaderField: "Authorization")
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.setValue("application/json version=\(apiVersion)", forHTTPHeaderField: "Accept")
 
-    urlSession.dataTaskWithRequest(request) { data, response, error in
+    urlSession.dataTask(with: request) { data, response, error in
       if let error = error {
-        completionHandler?(.Error(.Other(error: error)))
+        completionHandler?(.error(.other(error: error as NSError)))
       } else {
-        let statusCode = (response as? NSHTTPURLResponse)?.statusCode
-        if case .Some(200...299) = statusCode {
-          completionHandler?(.Success)
+        let statusCode = (response as? HTTPURLResponse)?.statusCode
+        if case .some(200...299) = statusCode {
+          completionHandler?(.success)
         } else {
-          completionHandler?(.Error(.InvalidStatusCode(statusCode)))
+          completionHandler?(.error(.invalidStatusCode(statusCode)))
         }
       }
     }.resume()
   }
 
-  func URLForChannel(channel: String, environment: Environment) -> NSURL? {
-    let components = NSURLComponents()
+  func url(forChannel channel: String, environment: Environment) -> URL? {
+    var components = URLComponents()
     components.path = "subscribe/\(self.parameterizeString(channel))"
-    components.queryItems = [NSURLQueryItem(name: "environment", value: self.environment.rawValue)]
-    return components.URLRelativeToURL(self.baseURL)
+    components.queryItems = [URLQueryItem(name: "environment", value: self.environment.rawValue)]
+    return components.url(relativeTo: self.baseURL)
   }
 }
 
 private extension String {
-  func stringByReplacingMatches(regex: NSRegularExpression, withString replacementString: String) -> String {
-    let range = NSRange(location: 0, length: startIndex.distanceTo(endIndex))
-    return regex.stringByReplacingMatchesInString(self, options: [], range: range, withTemplate: replacementString)
+  func stringByReplacingMatches(_ regex: NSRegularExpression, withString replacementString: String) -> String {
+    let range = NSRange(location: 0, length: characters.distance(from: startIndex, to: endIndex))
+    return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: replacementString)
   }
 }

@@ -14,8 +14,8 @@
 		A15002F91CC51C4F0036CAF5 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A15002F71CC51C4F0036CAF5 /* Quick.framework */; };
 		A15002FC1CC51C980036CAF5 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15002F61CC51C4F0036CAF5 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A15002FD1CC51C980036CAF5 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A15002F71CC51C4F0036CAF5 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		A15003001CC51F930036CAF5 /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15002FF1CC51F930036CAF5 /* URLSession.swift */; };
-		A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15003011CC51FF70036CAF5 /* URLSessionTask.swift */; };
+		A15003001CC51F930036CAF5 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15002FF1CC51F930036CAF5 /* URLSessionProtocol.swift */; };
+		A15003021CC51FF70036CAF5 /* URLSessionTaskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15003011CC51FF70036CAF5 /* URLSessionTaskProtocol.swift */; };
 		A17699511CF59DB9000C7D15 /* CourierResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17699501CF59DB9000C7D15 /* CourierResult.swift */; };
 		A1B8D8321CF3D40B001E0FA5 /* CourierError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B8D8311CF3D40B001E0FA5 /* CourierError.swift */; };
 		A1C837261CB6446100F4BB21 /* Courier.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C837251CB6446100F4BB21 /* Courier.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -53,8 +53,8 @@
 		A15002F41CC51A950036CAF5 /* CourierSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierSpec.swift; sourceTree = "<group>"; };
 		A15002F61CC51C4F0036CAF5 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
 		A15002F71CC51C4F0036CAF5 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
-		A15002FF1CC51F930036CAF5 /* URLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSession.swift; sourceTree = "<group>"; };
-		A15003011CC51FF70036CAF5 /* URLSessionTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionTask.swift; sourceTree = "<group>"; };
+		A15002FF1CC51F930036CAF5 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
+		A15003011CC51FF70036CAF5 /* URLSessionTaskProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionTaskProtocol.swift; sourceTree = "<group>"; };
 		A17699501CF59DB9000C7D15 /* CourierResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierResult.swift; sourceTree = "<group>"; };
 		A1B8D8311CF3D40B001E0FA5 /* CourierError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CourierError.swift; sourceTree = "<group>"; };
 		A1C837221CB6446100F4BB21 /* Courier.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Courier.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,8 +115,8 @@
 		A15002FE1CC51F790036CAF5 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				A15002FF1CC51F930036CAF5 /* URLSession.swift */,
-				A15003011CC51FF70036CAF5 /* URLSessionTask.swift */,
+				A15002FF1CC51F930036CAF5 /* URLSessionProtocol.swift */,
+				A15003011CC51FF70036CAF5 /* URLSessionTaskProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -210,7 +210,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = thoughtbot;
 				TargetAttributes = {
 					A15002E81CC5190C0036CAF5 = {
@@ -271,10 +271,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A15003021CC51FF70036CAF5 /* URLSessionTask.swift in Sources */,
+				A15003021CC51FF70036CAF5 /* URLSessionTaskProtocol.swift in Sources */,
 				A17699511CF59DB9000C7D15 /* CourierResult.swift in Sources */,
 				A13280B11CCE66D400D3E964 /* Environment.swift in Sources */,
-				A15003001CC51F930036CAF5 /* URLSession.swift in Sources */,
+				A15003001CC51F930036CAF5 /* URLSessionProtocol.swift in Sources */,
 				A1B8D8321CF3D40B001E0FA5 /* CourierError.swift in Sources */,
 				A1C8372E1CB644DA00F4BB21 /* Courier.swift in Sources */,
 			);
@@ -304,7 +304,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.thoughtbot.CourierTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -320,7 +320,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thoughtbot.CourierTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -424,6 +424,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -435,7 +436,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -443,6 +444,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -453,7 +455,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.thoughtbot.Courier;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
